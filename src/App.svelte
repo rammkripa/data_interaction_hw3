@@ -9,6 +9,9 @@
 	export let data = [];
   export let fullData = [];
 
+  let whichYear;
+  let numBreaches;
+
 	onMount(async function() {
     // load data from csv (source: https://chicagohealthatlas.org/download)
     let table = d3.csv('data_breaches.csv', (d) => ({
@@ -21,6 +24,8 @@
         }));
     data = await table;
     fullData = data;
+    numBreaches = data.length;
+    whichYear = d3.min(data, d => d['Year']);
 	});
 
 let scatterVar1 = 'Year';
@@ -42,7 +47,7 @@ function updateData() {
   
 
   <div class="flex-container row">
-    <div class="explainertext"> <p> This Chloropleth map shows the various census tracts that make up Chicago, colored by their population. </p> </div>
+    <div class="explainertext"> <p> Since the year {whichYear}, there have been {numBreaches} data breaches. </p> </div>
     <div class="flex-container col">
       <div class="scatter"><Scatter data={data} fullData={fullData} variable1={scatterVar1} variable2={scatterVar2} bind:selectedPoints={scatterSelection} update={updateData}></Scatter></div>
     </div>
