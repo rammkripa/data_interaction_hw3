@@ -72,9 +72,9 @@ function updateData() {
     <div class="explainertext"> <p> Since the year {whichYear}, there have been {numBreaches} data breaches. </p> </div>
     <div class="flex-container col">
       <div class="hist"><Histogram data={data} fullData={fullData} variable={'NumRecords'} bind:filter={filter1} update={updateData}></Histogram></div>
-      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={variable2} bind:filter={filter2} update={updateData}></HorizontalBar></div>
-      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={variable3} bind:filter={filter3} update={updateData}></HorizontalBar></div>
-      <div class="scatter"><Scatter data={data} fullData={fullData} variable1={scatterVar1} variable2={scatterVar2} bind:selectedPoints={scatterSelection} update={updateData}></Scatter></div>
+      <div class="hbar"><HorizontalBar data={data} fullData={fullData} variable={variable2} bind:filter={filter2} update={updateData}></HorizontalBar></div>
+      <div class="hbar"><HorizontalBar data={data} fullData={fullData} variable={variable3} bind:filter={filter3} update={updateData}></HorizontalBar></div>
+      <div class="bar"><Bar data={data} fullData={fullData} variable={"Year"} update={updateData}></Bar></div>
     </div>
   </div>
 </main>

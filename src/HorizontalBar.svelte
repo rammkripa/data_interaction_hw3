@@ -18,7 +18,11 @@
 
     function handleBarClick(category) {
         console.log('Bar clicked:', category);
+        if (filter.includes(category)) {
+            filter = []; // Clear the filter if the category is already selected
+        } else {
         filter = [category]; // Set the filter to the clicked category
+        }
         update(); // Trigger the update function to apply the filter
     }
 
@@ -40,6 +44,12 @@
         .sort((a, b) => d3.descending(a.value, b.value))
         .slice(0, 10)
     : [];
+
+    // Filter barData to only include categories in barFullData
+    $: {
+        const fullDataKeys = new Set(barFullData.map((d) => d.key));
+        barData = barData.filter((d) => fullDataKeys.has(d.key));
+    }
 
     // Make scales for horizontal bar chart
     $: xScale = d3.scaleLinear()
@@ -96,8 +106,8 @@
         <g transform="translate({margin.left}, {margin.top})" bind:this={yAxis} />
 
         <!-- Axis labels -->
-        <text x={width / 2} y={height - 5} text-anchor="middle" fill="black">Count</text>
-        <text x={-chartH / 2} y="15" transform="rotate(-90)" text-anchor="middle" fill="black">{variable}</text>
+        <text x={width / 2} y={height} text-anchor="middle" fill="black">Count of Data Breaches</text>
+        <text x={-chartH / 2} y="14" transform="rotate(-90)" text-anchor="middle" fill="black">{variable}</text>
     </svg>
 </main>
 

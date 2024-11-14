@@ -18,25 +18,32 @@
     let yAxis;   
 
     // create bar data
+    // create bar data
+    $: barFullData = fullData
+        ? Array.from(
+              d3.rollup(fullData, (v) => v.length, (d) => d[variable]),
+              ([key, value]) => ({ key, value })
+          )
+          .sort((a, b) => d3.ascending(a.key, b.key))
+        : [];
     $: barData = data
         ? Array.from(
               d3.rollup(data, (v) => v.length, (d) => d[variable]),
               ([key, value]) => ({ key, value })
           )
-            .sort((a, b) => d3.descending(a.value, b.value))
-            .slice(0, 10)
+          .sort((a, b) => d3.ascending(a.key, b.key))
         : [];
 
     // make y scale for the bar chart (categorical variable)
     // make x and y scales for the bar chart
     $: xScale = d3.scaleBand()
         .range([0, chartW])
-        .domain(barData.map((d) => d.key))
+        .domain(barFullData.map((d) => d.key))
         .padding(0.1);
 
     $: yScale = d3.scaleLinear()
         .range([chartH, 0])
-        .domain([0, d3.max(barData, (d) => d.value)]);
+        .domain([0, d3.max(barFullData, (d) => d.value)]);
     $: {
             d3.select(xAxis)
                 .call(d3.axisBottom(xScale))
@@ -53,7 +60,7 @@
     <p> Here is a Bar showing the distribution of the {variable} </p>
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
-            {#each barData as d}
+            {#each barFullData as d}
                 <rect class="backgroundbar"
                     x={xScale(d.key)}
                     y={yScale(d.value)}
@@ -66,17 +73,6 @@
                     y={yScale(d.value)}
                     width={xScale.bandwidth() * 0.9}
                     height={chartH - yScale(d.value)} />
-                <!-- Text labels inside bars -->
-                <text 
-                x={xScale(d.key) + xScale.bandwidth() / 2}
-                y={yScale(d.value) + 5}
-                transform={`rotate(90, ${xScale(d.key) + xScale.bandwidth() / 2}, ${yScale(d.value) - 5})`}
-                text-anchor="start"
-                alignment-baseline="middle" 
-                fill="white">
-                {d.key}
-            </text>
-
             {/each}
         </g>
 
@@ -90,14 +86,14 @@
             bind:this={yAxis} />
 
         <!-- Axis labels -->
-        <text x={width / 2} y={height - 5} text-anchor="middle" fill="white">{variable}</text>
+        <text x={width / 2} y={height} text-anchor="middle" fill="white">{variable}</text>
         <text x={-chartH / 2} y="15" transform="rotate(-90)" text-anchor="middle" fill="white">Count</text>
       </svg>
 </main>
 
 <style>
     .bar {
-        fill: blue;
+        fill: orangered;
         stroke: white;
         stroke-width: 1px;
     }
