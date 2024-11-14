@@ -37,9 +37,18 @@ let scatterSelection = [];
 
 let filter1 = [];
 let filter2 = [];
+let filter3 = [];
+let variable2 = 'OrgType';
+let variable3 = 'Method';
 
 function updateData() {
-
+  if (filter1.length === 0 && filter2.length === 0 && filter3.length === 0) {
+    data = fullData;
+    return;
+  }
+  data = fullData.filter(d => {
+    return filter1.includes(d['NumRecords']) && filter2.includes(d['OrgType']) && filter3.includes(d['Method']);
+  });
 }
 
 </script>
@@ -52,8 +61,8 @@ function updateData() {
     <div class="explainertext"> <p> Since the year {whichYear}, there have been {numBreaches} data breaches. </p> </div>
     <div class="flex-container col">
       <div class="hist"><Histogram data={data} fullData={fullData} variable={'NumRecords'} bind:filter={filter1} update={updateData}></Histogram></div>
-      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={'OrgType'} bind:filter={filter2} update={updateData}></HorizontalBar></div>
-      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={'Method'} bind:filter={filter2} update={updateData}></HorizontalBar></div>
+      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={variable2} bind:filter={filter2} update={updateData}></HorizontalBar></div>
+      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={variable3} bind:filter={filter3} update={updateData}></HorizontalBar></div>
       <div class="scatter"><Scatter data={data} fullData={fullData} variable1={scatterVar1} variable2={scatterVar2} bind:selectedPoints={scatterSelection} update={updateData}></Scatter></div>
     </div>
   </div>

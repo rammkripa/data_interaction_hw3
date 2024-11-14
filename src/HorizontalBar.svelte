@@ -3,6 +3,8 @@
 
     export let data;
     export let variable;
+    export let filter;
+    export let update;
 
     let margin = {top: 10, right: 30, bottom: 30, left: 100}; // Adjust left margin for labels
     let width = 500;
@@ -12,6 +14,12 @@
 
     let xAxis;
     let yAxis;
+
+    function handleBarClick(category) {
+        console.log('Bar clicked:', category);
+        filter = [category]; // Set the filter to the clicked category
+        update(); // Trigger the update function to apply the filter
+    }
 
     // Create bar data
     $: barData = data
@@ -59,7 +67,11 @@
                     x={0}
                     y={yScale(d.key)}
                     width={xScale(d.value)}
-                    height={yScale.bandwidth() * 0.9} />
+                    height={yScale.bandwidth() * 0.9}
+                    on:click={() => handleBarClick(d.key)}
+                    on:keydown={(e) => e.key === 'Enter' && handleBarClick(d.key)}
+                    role="button"
+                    tabindex=0 />
                 <!-- Text label inside or next to bar -->
                 <text x={xScale(d.value) + 5}
                     y={yScale(d.key) + yScale.bandwidth() / 2}

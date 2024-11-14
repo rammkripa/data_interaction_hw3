@@ -42,7 +42,7 @@
     $: binData = d3.histogram()
         .value((d) => d[variable])
         .domain(xScale.domain())
-        .thresholds(xScale.ticks(30));
+        .thresholds(xScale.ticks(50));
     $: backgroundBins = binData(fullData);
     $: bins = binData(data);
     $: yScale = d3.scaleLinear()
@@ -60,7 +60,7 @@
 
 <main>
     <h2> Distribution of {variable} </h2>
-    <p> Here is a histogram showing the distribution of the {variable} variable in the dataset. By selecting sections of the distribution, you can see the chloropleth map above change, showing only the census tracts corresponding to the regions within your selection. </p>
+    <p> Here is a histogram showing the distribution of the {variable} </p>
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
             {#each backgroundBins as d}
