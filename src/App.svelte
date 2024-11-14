@@ -6,12 +6,11 @@
   import Histogram from './Histogram.svelte';
   import Scatter from './Scatter.svelte';
   import Bar from './Bar.svelte';
+  import HorizontalBar from './HorizontalBar.svelte';
 
 	export let data = [];
   export let fullData = [];
-  export let barData = [];
 
-  let barDataOrgType = [];
   let whichYear;
   let numBreaches;
 
@@ -29,11 +28,6 @@
     fullData = data;
     numBreaches = data.length;
     whichYear = d3.min(data, d => d['Year']);
-    barDataOrgType = d3.rollup(data, v => v.length, d => d['OrgType']);
-    barData = Array.from(barDataOrgType, ([key, value]) => ({ key, value }));
-    // Take only the top 10 org types by value
-    barData = barData.sort((a, b) => d3.descending(a.value, b.value)).slice(0, 10);
-    console.log(barData);
 	});
 
 let scatterVar1 = 'Year';
@@ -58,7 +52,8 @@ function updateData() {
     <div class="explainertext"> <p> Since the year {whichYear}, there have been {numBreaches} data breaches. </p> </div>
     <div class="flex-container col">
       <div class="hist"><Histogram data={data} fullData={fullData} variable={'NumRecords'} bind:filter={filter1} update={updateData}></Histogram></div>
-      <div class="bar"><Bar data={data} fullData={fullData} variable={'OrgType'} barData={barData} bind:filter={filter2} update={updateData}></Bar></div>
+      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={'OrgType'} bind:filter={filter2} update={updateData}></HorizontalBar></div>
+      <div class="bar"><HorizontalBar data={data} fullData={fullData} variable={'Method'} bind:filter={filter2} update={updateData}></HorizontalBar></div>
       <div class="scatter"><Scatter data={data} fullData={fullData} variable1={scatterVar1} variable2={scatterVar2} bind:selectedPoints={scatterSelection} update={updateData}></Scatter></div>
     </div>
   </div>

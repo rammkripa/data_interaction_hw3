@@ -6,17 +6,26 @@
     export let variable;
     export let filter;
     export let update;
-    export let barData;
 
     let margin = {top: 10, right: 30, bottom: 30, left: 40};
-    let width = 360;
-    let height = 200;
+    let width = 500;
+    let height = 400;
     let chartW = width - margin.left - margin.right;
     let chartH = height - margin.top - margin.bottom;
 
     let brushLayer;
     let xAxis;
     let yAxis;   
+
+    // create bar data
+    $: barData = data
+        ? Array.from(
+              d3.rollup(data, (v) => v.length, (d) => d[variable]),
+              ([key, value]) => ({ key, value })
+          )
+            .sort((a, b) => d3.descending(a.value, b.value))
+            .slice(0, 10)
+        : [];
 
     // make y scale for the bar chart (categorical variable)
     // make x and y scales for the bar chart
@@ -41,7 +50,7 @@
 
 <main>
     <h2> Bar Chart </h2>
-    <p> Here is a histogram showing the distribution of the {variable} variable in the dataset. By selecting sections of the distribution, you can see the chloropleth map above change, showing only the census tracts corresponding to the regions within your selection. </p>
+    <p> Here is a Bar showing the distribution of the {variable} </p>
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
             {#each barData as d}
@@ -57,6 +66,17 @@
                     y={yScale(d.value)}
                     width={xScale.bandwidth() * 0.9}
                     height={chartH - yScale(d.value)} />
+                <!-- Text labels inside bars -->
+                <text 
+                x={xScale(d.key) + xScale.bandwidth() / 2}
+                y={yScale(d.value) + 5}
+                transform={`rotate(90, ${xScale(d.key) + xScale.bandwidth() / 2}, ${yScale(d.value) - 5})`}
+                text-anchor="start"
+                alignment-baseline="middle" 
+                fill="white">
+                {d.key}
+            </text>
+
             {/each}
         </g>
 
@@ -77,7 +97,7 @@
 
 <style>
     .bar {
-        fill: orangered;
+        fill: blue;
         stroke: white;
         stroke-width: 1px;
     }
