@@ -5,6 +5,7 @@
     export let variable;
     export let filter;
     export let update;
+    export let fullData;
 
     let margin = {top: 10, right: 30, bottom: 30, left: 100}; // Adjust left margin for labels
     let width = 500;
@@ -31,14 +32,23 @@
             .slice(0, 10)
         : [];
 
+    $: barFullData = fullData
+    ? Array.from(
+            d3.rollup(fullData, (v) => v.length, (d) => d[variable]),
+            ([key, value]) => ({ key, value })
+        )
+        .sort((a, b) => d3.descending(a.value, b.value))
+        .slice(0, 10)
+    : [];
+
     // Make scales for horizontal bar chart
     $: xScale = d3.scaleLinear()
         .range([0, chartW])
-        .domain([0, d3.max(barData, (d) => d.value)]);
+        .domain([0, d3.max(barFullData, (d) => d.value)]);
 
     $: yScale = d3.scaleBand()
         .range([0, chartH])
-        .domain(barData.map((d) => d.key))
+        .domain(barFullData.map((d) => d.key))
         .padding(0.1);
 
     $: {
@@ -52,7 +62,7 @@
     <p> Here is a bar chart showing the distribution of the {variable} variable. </p>
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
-            {#each barData as d}
+            {#each barFullData as d}
                 <!-- Background bar for each item (optional) -->
                 <rect class="backgroundbar"
                     x={0}
@@ -67,7 +77,7 @@
                     x={0}
                     y={yScale(d.key)}
                     width={xScale(d.value)}
-                    height={yScale.bandwidth() * 0.9}
+                    height={yScale.bandwidth()}
                     on:click={() => handleBarClick(d.key)}
                     on:keydown={(e) => e.key === 'Enter' && handleBarClick(d.key)}
                     role="button"

@@ -46,9 +46,20 @@ function updateData() {
     data = fullData;
     return;
   }
-  data = fullData.filter(d => {
-    return filter1.includes(d['NumRecords']) && filter2.includes(d['OrgType']) && filter3.includes(d['Method']);
-  });
+  console.log('Filtering data');
+  console.log('filter1 ', filter1);
+  if (filter1.length != 0) {
+    data = fullData.filter(d => {return filter1.includes(d['NumRecords'])});
+  }
+  console.log('filter2 ', filter2);
+  if (filter2.length != 0) {
+    data = data.filter(d => {return filter2.includes(d[variable2])});
+  }
+  console.log('filter3 ', filter3);
+  if (filter3.length != 0) {
+    data = data.filter(d => {return filter3.includes(d[variable3])});
+  }
+  console.log('Data after filtering: ', data);
 }
 
 </script>
