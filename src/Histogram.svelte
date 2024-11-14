@@ -8,7 +8,7 @@
     export let update;
 
     let margin = {top: 10, right: 30, bottom: 30, left: 40};
-    let width = 360;
+    let width = 500;
     let height = 200;
     let chartW = width - margin.left - margin.right;
     let chartH = height - margin.top - margin.bottom;

@@ -28,6 +28,8 @@
     fullData = data;
     numBreaches = data.length;
     whichYear = d3.min(data, d => d['Year']);
+    data = data.filter(d => d['Year'] >= whichYear);
+    fullData = data;
 	});
 
 let scatterVar1 = 'Year';
