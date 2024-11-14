@@ -6,6 +6,7 @@
     export let variable;
     export let filter;
     export let update;
+    export let barData;
 
     let margin = {top: 10, right: 30, bottom: 30, left: 40};
     let width = 360;
@@ -15,67 +16,47 @@
 
     let brushLayer;
     let xAxis;
-    let yAxis;
+    let yAxis;   
 
-    const brush = d3.brushX()
-        .extent([[0, 0], [chartW, chartH]])
-        .on("brush", brushed)
-        .on("end", brushended);        
-
-    function brushed(event) {
-        if (event && event.selection) {
-            filter = [xScale.invert(event.selection[0]), xScale.invert(event.selection[1])];
-            update();
-        }
-    }
-
-    function brushended(event) {
-        if (event && !event.selection) {
-            filter = [];
-            update();
-        }
-    }
-
-    $: xScale = d3.scaleLinear()
+    // make y scale for the bar chart (categorical variable)
+    // make x and y scales for the bar chart
+    $: xScale = d3.scaleBand()
         .range([0, chartW])
-        .domain(d3.extent(fullData.map((d) => d[variable])));
-    $: binData = d3.histogram()
-        .value((d) => d[variable])
-        .domain(xScale.domain())
-        .thresholds(xScale.ticks(30));
-    $: backgroundBins = binData(fullData);
-    $: bins = binData(data);
+        .domain(barData.map((d) => d.key))
+        .padding(0.1);
+
     $: yScale = d3.scaleLinear()
         .range([chartH, 0])
-        .domain([0, d3.max(backgroundBins, (d) => d.length)]);
-    $: {	
-            d3.select(brushLayer)
-                .call(brush);
+        .domain([0, d3.max(barData, (d) => d.value)]);
+    $: {
             d3.select(xAxis)
-                .call(d3.axisBottom(xScale));
+                .call(d3.axisBottom(xScale))
+                .selectAll(".tick text") // Select tick labels
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
             d3.select(yAxis)
                 .call(d3.axisLeft(yScale));
         }
 </script>
 
 <main>
-    <h2> Distribution of {variable} </h2>
+    <h2> Bar Chart </h2>
     <p> Here is a histogram showing the distribution of the {variable} variable in the dataset. By selecting sections of the distribution, you can see the chloropleth map above change, showing only the census tracts corresponding to the regions within your selection. </p>
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
-            {#each backgroundBins as d}
-                <rect class = "backgroundbar"
-                    x={xScale(d.x0)} 
-                    y={yScale(d.length)}
-                    width={xScale(d.x1) - xScale(d.x0)}
-                    height={chartH - yScale(d.length)}/>
+            {#each barData as d}
+                <rect class="backgroundbar"
+                    x={xScale(d.key)}
+                    y={yScale(d.value)}
+                    width={xScale.bandwidth()}
+                    height={chartH - yScale(d.value)} />
             {/each}
-            {#each bins as d}
-                <rect class = "bar"
-                    x={xScale(d.x0)} 
-                    y={yScale(d.length)}
-                    width={xScale(d.x1) - xScale(d.x0)}
-                    height={chartH - yScale(d.length)}/>
+            {#each barData as d}
+                <rect class="bar"
+                    x={xScale(d.key)}
+                    y={yScale(d.value)}
+                    width={xScale.bandwidth() * 0.9}
+                    height={chartH - yScale(d.value)} />
             {/each}
         </g>
 
