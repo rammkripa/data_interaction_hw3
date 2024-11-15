@@ -68,8 +68,8 @@
 </script>
 
 <main>
-    <h2> Horizontal Bar Chart </h2>
-    <p> Here is a bar chart showing the distribution of the {variable} variable. </p>
+    <h2> Data Breaches by {variable} </h2>
+    <!--  Here is a bar chart showing the number of data breaches, categorized by the {variable} variable. </p>--> 
     <svg {width} {height}>
         <g transform="translate({margin.left}, {margin.top})">
             {#each barFullData as d}
