@@ -1,10 +1,11 @@
-# Data Interaction HW2
+# Data Interaction HW3
 
-Link to deployed site: [https://6722b510110c3300082fd1f8--euphonious-malabi-69cd6b.netlify.app/](https://6722b510110c3300082fd1f8--euphonious-malabi-69cd6b.netlify.app/)
+Link to deployed site: [https://wondrous-kitsune-b486ec.netlify.app/](https://wondrous-kitsune-b486ec.netlify.app/)
 
 ## Contributions
 
-1. Extended the demo by adding the "Scatter.svelte" component.
-2. Added ability to select individual points in the scatterplot which affects the histograms and chloropleth.
+1. Created Bar.svelte.
+2. Created HorizontalBar.svelte
 3. Added text to explain each plot and what interactive components exist in them.
-4. Added two fully interactive scatterplots using new variables from the csv file.
+4. Made bar charts interoperable to filter and affect the data breaches over time viz.
+5. Implemented scrollyteller with sticky chart on the right
